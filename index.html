@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Geetha Shloka Daily</title>
+    <meta name="description" content="Learn a daily Bhagavad Geetha shloka with a beautiful interface and earn points for your streak." />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <header class="site-header nav">
+      <div class="nav-left">
+        <h1 id="brand-home" class="brand-roman" title="Go to Home">Geetha Shloka Daily</h1>
+        <span class="brand-sa">गीता श्लोक दैनिक</span>
+        <span class="tagline">One verse a day</span>
+        <span class="brand-by"><img class="brand-logo header-logo" src="./assets/sanatana-katha-ai.png" alt="Sanatana Katha AI" onerror="this.src='./assets/sanatana-katha-ai.jpg'; this.onerror=null;"> <a class="brand-link" href="https://ravimildseven.github.io/sanatanaAI/" target="_blank" rel="noopener noreferrer">by Sanatana Katha AI</a></span>
+      </div>
+      <div class="nav-right">
+        <div class="social-links">
+          <a class="social" href="https://ravimildseven.github.io/sanatanaAI/" target="_blank" rel="noopener noreferrer" title="Website">
+            <img class="social-icon" src="./assets/social-website.svg" alt="Website">
+          </a>
+          <a class="social" href="https://www.youtube.com/@SanatanaKathaAI" target="_blank" rel="noopener noreferrer" title="YouTube">
+            <img class="social-icon" src="./assets/social-youtube.svg" alt="YouTube">
+          </a>
+          <a class="social" href="https://www.instagram.com/sanatanakathaai/" target="_blank" rel="noopener noreferrer" title="Instagram">
+            <img class="social-icon" src="./assets/social-instagram.svg" alt="Instagram">
+          </a>
+        </div>
+        <div class="toolbar">
+          <button id="btn-home" class="ghost" title="Home">Home</button>
+          <button id="btn-toggle-all" class="ghost" title="Enable all tiles for testing">Enable all</button>
+          <button id="btn-reset" class="ghost" title="Reset progress">Reset</button>
+          <button id="btn-about" class="ghost" title="About">About</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="chapters-overview" class="chapters-overview">
+        <div class="overview-header">
+          <h2>Chapters</h2>
+          <p class="chapter-sub">Tap a chapter to view its daily verse</p>
+        </div>
+        <div class="chapters-grid" id="chapters-grid"></div>
+      </section>
+
+      <div id="ch1-detail" hidden>
+      <section class="chapter">
+        <div class="chapter-header">
+          <h2>Chapter 1</h2>
+          <button id="btn-back-chapters" class="ghost" title="Back to chapters">← Chapters</button>
+        </div>
+        <div class="guide card">
+          <details id="guide">
+            <summary class="guide-title">How this works</summary>
+            <ol class="guide-steps">
+              <li>
+                <h4>Daily unlock</h4>
+                <p>Each day a new tile becomes available. Tap the tile for today’s verse to open the full text, transliteration, and translation.</p>
+              </li>
+              <li>
+                <h4>Test mode (dev/testing only)</h4>
+                <p>If you’re testing the site, enable <em>All tiles</em> in the top-right to unlock every verse instantly. This is only for testing — normal users see one verse per day.</p>
+              </li>
+              <li>
+                <h4>View &amp; practice</h4>
+                <ul>
+                  <li>Read the original verse and transliteration</li>
+                  <li>See a concise translation and short commentary</li>
+                  <li>Use playback controls to hear the verse</li>
+                </ul>
+              </li>
+              <li>
+                <h4>Playback controls</h4>
+                <ul>
+                  <li><strong>Play / Stop</strong> — listen to the verse audio for pronunciation and cadence.</li>
+                  <li><strong>Copy verse</strong> — copy the original + transliteration + translation to clipboard for study notes or sharing.</li>
+                  <li><strong>Save PNG</strong> — export a clean image of the verse (ready for social or printing).</li>
+                </ul>
+              </li>
+              <li>
+                <h4>Mark as learned</h4>
+                <ul>
+                  <li>Earn points</li>
+                  <li>Add a day to your streak</li>
+                  <li>Unlock progress rewards (if enabled)</li>
+                </ul>
+              </li>
+              <li>
+                <h4>Streaks &amp; points</h4>
+                <p>Keep a daily streak by marking the verse learned on the same day it unlocks. Points accumulate and can be used for badges, milestone rewards, or friendly leaderboards.</p>
+              </li>
+            </ol>
+          </details>
+        </div>
+        <figure class="chapter-art-wrap">
+          <img id="chapter-art" class="chapter-art" src="./assets/ch1-hero-1.jpg" alt="Kurukshetra battlefield">
+        </figure>
+        <div id="chapter-grid" class="chapter-grid" aria-label="Chapter 1 verses" role="list"></div>
+      </section>
+
+      <section class="hero">
+        <div class="decor decor-1"></div>
+        <div class="decor decor-2"></div>
+        <div class="decor decor-3"></div>
+        <div class="hero-content">
+          <h2>Today’s Shloka</h2>
+          <div class="card verse-card" id="shloka-card">
+            <div class="verse-art" aria-hidden="true"></div>
+            <div class="shloka-meta">
+              <span class="verse-icon" aria-hidden="true">📜</span>
+              <span id="shloka-source" class="badge"></span>
+            </div>
+            <div class="shloka-text">
+              <div id="shloka-sanskrit" class="sanskrit">Loading...</div>
+              <div id="shloka-transliteration" class="transliteration"></div>
+            </div>
+            <div class="actions">
+              <button id="mark-learned" class="primary" title="Mark today’s verse as learned (+10 points)">Mark as learned</button>
+              <button id="show-meaning" class="secondary" title="Toggle meaning">Show meaning</button>
+              <button id="play-audio" class="secondary" title="Play verse audio">🔊 Play audio</button>
+              <button id="stop-audio" class="secondary" title="Stop audio">⏹ Stop audio</button>
+              <button id="copy-verse" class="secondary" title="Copy Sanskrit + transliteration + source">📋 Copy verse</button>
+              <button id="save-png" class="secondary" title="Save shareable PNG">⬇️ Save PNG</button>
+            </div>
+            <div class="meaning" id="shloka-meaning" hidden></div>
+          </div>
+        </div>
+      </section>
+
+      </div>
+
+      <section class="stats">
+        <div class="stat">
+          <div class="label">Points</div>
+          <div class="value" id="points">0</div>
+        </div>
+        <div class="stat">
+          <div class="label">Current streak</div>
+          <div class="value" id="streak">0 days</div>
+        </div>
+        <div class="stat">
+          <div class="label">Last completed</div>
+          <div class="value" id="last-completed">—</div>
+        </div>
+      </section>
+
+      <section class="info-strip">
+        <div class="card info-card" role="note" aria-live="polite">
+          <div class="info-ico" aria-hidden="true">💾</div>
+          <div class="info-copy">
+            <strong>Progress is saved on this device.</strong>
+            <span>Points and streaks live in your browser’s storage. Clearing site data resets progress. No accounts or cloud sync yet.</span>
+            <a id="link-about-more" href="#" class="info-link" title="Learn more">Learn more</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="rewards" id="rewards" hidden>
+        <div class="reward-banner" id="reward-banner"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer enhanced">
+      <div class="footer-inner">
+        <div class="col">
+          <div class="brand">Geetha Shloka Daily</div>
+          <small>Study offline. Your progress stays on this device.</small>
+        </div>
+        <div class="col">
+          <small>Sources:
+            <a href="https://vignanam.org/" target="_blank" rel="noopener noreferrer">Vaidika Vignanam</a>
+          </small>
+        </div>
+        <div class="col brand-as">
+          <img class="brand-logo footer-logo" src="./assets/sanatana-katha-ai.png" alt="Sanatana Katha AI" onerror="this.src='./assets/sanatana-katha-ai.jpg'; this.onerror=null;">
+          <div class="brand-as-meta">
+            <small>A project by Sanatana Katha AI</small>
+            <div class="social-links">
+              <a class="social" href="https://ravimildseven.github.io/sanatanaAI/" target="_blank" rel="noopener noreferrer" title="Website">
+                <img class="social-icon" src="./assets/social-website.svg" alt="Website">
+              </a>
+              <a class="social" href="https://www.youtube.com/@SanatanaKathaAI" target="_blank" rel="noopener noreferrer" title="YouTube">
+                <img class="social-icon" src="./assets/social-youtube.svg" alt="YouTube">
+              </a>
+              <a class="social" href="https://www.instagram.com/sanatanakathaai/" target="_blank" rel="noopener noreferrer" title="Instagram">
+                <img class="social-icon" src="./assets/social-instagram.svg" alt="Instagram">
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- About Modal -->
+    <div id="about-modal" class="modal" hidden>
+      <div class="modal-backdrop" data-close="modal"></div>
+      <div class="modal-card">
+        <button class="modal-close" data-close="modal" aria-label="Close">✕</button>
+        <h3>Why Learn the Bhagavad Gita?</h3>
+        <ul class="about-points">
+          <li><strong>Timeless Wisdom</strong> – Offers practical guidance for modern life while rooted in eternal truths.</li>
+          <li><strong>Inner Peace &amp; Clarity</strong> – Helps overcome stress, confusion, and doubts through self-reflection.</li>
+          <li><strong>Daily Inspiration</strong> – Each shloka carries a powerful message to uplift your mind and spirit.</li>
+          <li><strong>Spiritual Growth</strong> – Deepens your connection with the Self, the Divine, and universal truth.</li>
+          <li><strong>Practical Philosophy</strong> – Teaches balance between material duties and spiritual progress.</li>
+          <li><strong>Decision-Making Power</strong> – Provides clarity in facing life’s challenges with courage and wisdom.</li>
+          <li><strong>Moral Compass</strong> – Strengthens values like compassion, discipline, and detachment.</li>
+          <li><strong>Streak of Learning</strong> – A shloka-a-day approach makes spiritual learning simple, consistent, and rewarding.</li>
+          <li><strong>Global Relevance</strong> – Beyond religion, it’s a guide to mindfulness, resilience, and purposeful living.</li>
+        </ul>
+        <div class="modal-brand">
+          <img class="brand-logo footer-logo" src="./assets/sanatana-katha-ai.png" alt="Sanatana Katha AI" onerror="this.src='./assets/sanatana-katha-ai.jpg'; this.onerror=null;">
+          <div>
+            <div class="brand">Sanatana Katha AI</div>
+            <small>Stories of Dharma • Learn, reflect, and grow</small>
+          </div>
+        </div>
+        <div class="modal-pref">
+          <label><input id="about-show-next" type="checkbox"> Show on next visit</label>
+        </div>
+      </div>
+    </div>
+
+    <script src="./script.js" type="module"></script>
+  </body>
+</html>

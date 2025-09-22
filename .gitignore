@@ -1,0 +1,12 @@
+# General
+.DS_Store
+
+# Node/JS (optional future tooling)
+node_modules/
+dist/
+.tmp/
+*.log
+
+# Env files
+.env
+.env.*.local

@@ -92,9 +92,10 @@ function getCompletedVersesSet() {
   return set;
 }
 
-function buildChapterGrid() {
-  const grid = document.getElementById('chapter-grid');
-  grid.innerHTML = '';
+function buildVersesList() {
+  const list = document.getElementById('verses-list');
+  if (!list) return;
+  list.innerHTML = '';
 
   const today = new Date();
   const todayKey = fmtDate(today);
@@ -104,16 +105,22 @@ function buildChapterGrid() {
   const debugAll = isDebugAllTiles();
 
   for (let i = 0; i < CH1.length; i++) {
+    const li = document.createElement('li');
+    li.className = 'verse-item';
+
     const btn = document.createElement('button');
-    btn.className = 'tile';
-    btn.setAttribute('role', 'listitem');
-    btn.title = `Chapter 1, Verse ${i+1}`;
-    btn.innerHTML = `<img class=\"tile-logo\" src=\"./assets/sanatana-katha-ai.png\" alt=\"\" onerror=\"this.src='./assets/sanatana-katha-ai.jpg'; this.onerror=null;\"><span class=\"num-badge\">${i+1}</span>`;
+    btn.className = 'verse-row';
+    btn.title = `Verse ${i+1}`;
+
+    const left = document.createElement('span');
+    left.className = 'verse-label';
+    left.textContent = `Verse ${i+1}`;
+
+    const right = document.createElement('span');
+    right.className = 'verse-status';
 
     const isToday = i === todaysIdx;
     const isCompleted = completedSet.has(i);
-    if (isToday) btn.classList.add('current');
-    if (isCompleted) btn.classList.add('completed');
 
     // Unlock rule: today's verse OR any previously completed verse
     const isUnlocked = debugAll || isToday || isCompleted;
@@ -121,28 +128,21 @@ function buildChapterGrid() {
       btn.disabled = true;
       btn.classList.add('locked');
     }
-    
-    if (completedToday && isToday) {
-      btn.title += ' (Completed today)';
-    }
-    if (selectedIdx === i) {
-      btn.classList.add('selected');
-    }
 
-    // A tiny status icon
-    const status = document.createElement('span');
-    status.className = 'icon';
-    status.textContent = isCompleted ? '✔️' : (isUnlocked ? '' : '');
-    btn.appendChild(status);
+    if (isCompleted) right.textContent = '✔️';
+    else if (isToday) right.textContent = 'Today';
 
-    // Allow clicking any unlocked tile to view it
+    if (selectedIdx === i) btn.classList.add('selected');
+
+    btn.appendChild(left);
+    btn.appendChild(right);
+
     if (isUnlocked) {
-      btn.addEventListener('click', () => {
-        selectVerse(i);
-      });
+      btn.addEventListener('click', () => selectVerse(i));
     }
 
-    grid.appendChild(btn);
+    li.appendChild(btn);
+    list.appendChild(li);
   }
 }
 
@@ -150,20 +150,24 @@ function isMobile(){ return window.matchMedia && window.matchMedia('(max-width: 
 
 function selectVerse(idx) {
   selectedIdx = idx;
-  // Update grid to show selection
-  buildChapterGrid();
+  // Update list to show selection
+  buildVersesList();
   renderSelected();
-  // Highlight + ensure selected tile is visible in sidebar
-  const grid = document.getElementById('chapter-grid');
-  if (grid) {
-    const tiles = grid.querySelectorAll('button.tile');
-    const t = tiles[idx];
+  // Highlight + ensure selected item is visible in sidebar
+const listEl = document.getElementById('verses-list');
+  if (listEl) {
+    const rows = listEl.querySelectorAll('button.verse-row');
+    const t = rows[idx];
     if (t && typeof t.scrollIntoView === 'function') t.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
   // Focus: scroll to verse and close sidebar on mobile
   const card = document.getElementById('shloka-card');
   if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  if (isMobile()) document.body.classList.remove('sidebar-open');
+  if (isMobile()) {
+    const overlay = document.getElementById('sidebar-overlay');
+    if (overlay) overlay.hidden = true;
+    document.body.classList.remove('sidebar-open');
+  }
 }
 
 function renderSelected() {
@@ -229,8 +233,9 @@ function handleMarkLearned() {
   // Update UI
   maybeReward(state);
   // Rebuild grid to reflect completion
-  buildChapterGrid();
+buildVersesList();
   renderSelected();
+  updateCh1Progress();
 }
 
 function maybeReward(state) {
@@ -269,7 +274,7 @@ function initEvents() {
   if (btnAll) btnAll.addEventListener('click', () => {
     const to = isDebugAllTiles() ? '0' : '1';
     localStorage.setItem('gsd_debug_all_tiles', to);
-    buildChapterGrid();
+    buildVersesList();
   });
   const btnReset = document.getElementById('btn-reset');
   if (btnReset) btnReset.addEventListener('click', () => {
@@ -279,7 +284,7 @@ function initEvents() {
     localStorage.removeItem(HISTORY_KEY);
     alert('Progress cleared.');
     renderSelected();
-    buildChapterGrid();
+    buildVersesList();
   });
   const btnAbout = document.getElementById('btn-about');
   if (btnAbout) btnAbout.addEventListener('click', () => openAbout());
@@ -298,13 +303,26 @@ function initEvents() {
 
   // Chapters overview
   const backBtn = document.getElementById('btn-back-chapters');
-  if (backBtn) backBtn.addEventListener('click', () => document.body.classList.add('sidebar-open'));
+  if (backBtn) backBtn.addEventListener('click', () => setSidebar(true));
   const brandHome = document.getElementById('brand-home');
-  if (brandHome) brandHome.addEventListener('click', () => document.body.classList.add('sidebar-open'));
+  if (brandHome) brandHome.addEventListener('click', () => setSidebar(true));
   const homeBtn = document.getElementById('btn-home');
-  if (homeBtn) homeBtn.addEventListener('click', () => document.body.classList.add('sidebar-open'));
+  if (homeBtn) homeBtn.addEventListener('click', () => setSidebar(true));
+  const overlay = document.getElementById('sidebar-overlay');
+  function setSidebar(open) {
+    if (open) {
+      document.body.classList.add('sidebar-open');
+      if (overlay) overlay.hidden = false;
+    } else {
+      document.body.classList.remove('sidebar-open');
+      if (overlay) overlay.hidden = true;
+    }
+  }
   const sidebarT = document.getElementById('btn-sidebar');
-  if (sidebarT) sidebarT.addEventListener('click', () => document.body.classList.toggle('sidebar-open'));
+  if (sidebarT) sidebarT.addEventListener('click', () => setSidebar(!document.body.classList.contains('sidebar-open')));
+  const menuBtn = document.getElementById('btn-menu');
+  if (menuBtn) menuBtn.addEventListener('click', () => setSidebar(!document.body.classList.contains('sidebar-open')));
+  if (overlay) overlay.addEventListener('click', () => setSidebar(false));
   const aboutLink = document.getElementById('link-about-more');
   if (aboutLink) aboutLink.addEventListener('click', (e)=>{ e.preventDefault(); openAbout(); });
   const guide = document.getElementById('guide');
@@ -319,27 +337,24 @@ function initEvents() {
 }
 
 function buildChaptersOverview() {
-  const grid = document.getElementById('chapters-grid');
-  if (!grid) return;
-  grid.innerHTML = '';
+  const list = document.getElementById('chapters-list');
+  if (!list) return;
+  list.innerHTML = '';
   for (let i=1;i<=18;i++){
     const btn = document.createElement('button');
     const disabled = i !== 1;
-    btn.className = 'chapter-tile' + (disabled ? ' disabled' : '');
-    // set background image per chapter if available (assets/ch{n}-hero-1.*), else fallback to ch1 hero
-    setChapterTileBackground(btn, i);
-    const num = document.createElement('div'); num.className = 'ch-num'; num.textContent = i;
-    const label = document.createElement('div'); label.className = 'ch-label'; label.textContent = `Chapter ${i}`;
-    btn.appendChild(num); btn.appendChild(label);
+    btn.className = 'chapter-item' + (disabled ? ' disabled' : '');
+    const title = document.createElement('div'); title.className = 'ch-title'; title.textContent = `Chapter ${i}`;
+    const badge = document.createElement('div'); badge.className = 'ch-badge'; badge.textContent = i;
+    btn.appendChild(title); btn.appendChild(badge);
     if (!disabled) {
       btn.addEventListener('click', showChapter1);
     } else {
       btn.addEventListener('click', () => alert('Coming soon: Chapters 2–18'));
     }
-    grid.appendChild(btn);
+    list.appendChild(btn);
   }
 }
-
 function buildVersesSections() {
   const container = document.getElementById('verses-sections');
   if (!container) return;
@@ -350,15 +365,24 @@ function buildVersesSections() {
     if (ch===1) det.open = true;
     const sum = document.createElement('summary');
     sum.className = 'verses-title';
-    sum.textContent = `Chapter ${ch} — Verses`;
+    const title = document.createElement('span');
+    title.textContent = `Chapter ${ch} — Verses`;
+    sum.appendChild(title);
+    if (ch===1) {
+      const cnt = document.createElement('span');
+      cnt.id = 'ch1-count';
+      cnt.className = 'verses-count';
+      cnt.textContent = '0/47';
+      sum.appendChild(cnt);
+    }
     det.appendChild(sum);
     if (ch===1) {
-      const grid = document.createElement('div');
-      grid.id = 'chapter-grid';
-      grid.className = 'chapter-grid';
-      grid.setAttribute('role','list');
-      grid.setAttribute('aria-label','Chapter 1 verses');
-      det.appendChild(grid);
+      sum.addEventListener('click', () => showChapter1());
+      const list = document.createElement('ul');
+      list.id = 'verses-list';
+      list.className = 'verses-list';
+      list.setAttribute('aria-label','Chapter 1 verses');
+      det.appendChild(list);
     } else {
       const p = document.createElement('div');
       p.className = 'video-copy';
@@ -370,16 +394,34 @@ function buildVersesSections() {
 }
 
 function showOverview() {
+  const overlay = document.getElementById('sidebar-overlay');
+  if (overlay) overlay.hidden = false;
   document.body.classList.add('sidebar-open');
   localStorage.setItem('gsd_last_chapter_open','0');
 }
 
+function setActiveChapter(ch) {
+  document.querySelectorAll('.verses-nav').forEach((el, idx) => {
+    if (idx === ch-1) el.classList.add('active'); else el.classList.remove('active');
+  });
+}
+
+function updateCh1Progress() {
+  const set = getCompletedVersesSet();
+  const el = document.getElementById('ch1-count');
+  if (el) el.textContent = `${set.size}/47`;
+}
+
 function showChapter1() {
+  const overlay = document.getElementById('sidebar-overlay');
+  if (overlay) overlay.hidden = true;
   document.body.classList.remove('sidebar-open');
   localStorage.setItem('gsd_last_chapter_open','1');
   loadChapterArt();
-  buildChapterGrid();
+  buildVersesList();
   renderSelected();
+  setActiveChapter(1);
+  updateCh1Progress();
 }
 
 function setChapterTileBackground(el, idx) {
@@ -676,8 +718,8 @@ function autoOverlayForCard(src){
   const today = new Date();
   todaysIdx = indexForDate(today);
   selectedIdx = todaysIdx;
-  buildChaptersOverview();
   buildVersesSections();
+  setActiveChapter(1);
   const lastOpen = localStorage.getItem('gsd_last_chapter_open');
   if (lastOpen === '1') showChapter1(); else showOverview();
   renderSelected();
@@ -688,7 +730,5 @@ function autoOverlayForCard(src){
   const fallbackSeen = localStorage.getItem('gsd_about_seen');
   if (auto === '1' || (auto === null && fallbackSeen !== '1')) {
     setTimeout(() => openAbout(), 800);
-  }
-})();
   }
 })();

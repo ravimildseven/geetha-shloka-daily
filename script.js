@@ -146,11 +146,24 @@ function buildChapterGrid() {
   }
 }
 
+function isMobile(){ return window.matchMedia && window.matchMedia('(max-width: 640px)').matches; }
+
 function selectVerse(idx) {
   selectedIdx = idx;
   // Update grid to show selection
   buildChapterGrid();
   renderSelected();
+  // Highlight + ensure selected tile is visible in sidebar
+  const grid = document.getElementById('chapter-grid');
+  if (grid) {
+    const tiles = grid.querySelectorAll('button.tile');
+    const t = tiles[idx];
+    if (t && typeof t.scrollIntoView === 'function') t.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  // Focus: scroll to verse and close sidebar on mobile
+  const card = document.getElementById('shloka-card');
+  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (isMobile()) document.body.classList.remove('sidebar-open');
 }
 
 function renderSelected() {
@@ -169,6 +182,9 @@ function renderSelected() {
 
   const meaningEl = document.getElementById('shloka-meaning');
   meaningEl.textContent = s.meaning || '';
+
+  // Render video if available
+  renderVideo(s);
 
   const state = loadState();
   const lastText = state.lastCompleted ? state.lastCompleted : '—';
@@ -282,11 +298,13 @@ function initEvents() {
 
   // Chapters overview
   const backBtn = document.getElementById('btn-back-chapters');
-  if (backBtn) backBtn.addEventListener('click', showOverview);
+  if (backBtn) backBtn.addEventListener('click', () => document.body.classList.add('sidebar-open'));
   const brandHome = document.getElementById('brand-home');
-  if (brandHome) brandHome.addEventListener('click', showOverview);
+  if (brandHome) brandHome.addEventListener('click', () => document.body.classList.add('sidebar-open'));
   const homeBtn = document.getElementById('btn-home');
-  if (homeBtn) homeBtn.addEventListener('click', showOverview);
+  if (homeBtn) homeBtn.addEventListener('click', () => document.body.classList.add('sidebar-open'));
+  const sidebarT = document.getElementById('btn-sidebar');
+  if (sidebarT) sidebarT.addEventListener('click', () => document.body.classList.toggle('sidebar-open'));
   const aboutLink = document.getElementById('link-about-more');
   if (aboutLink) aboutLink.addEventListener('click', (e)=>{ e.preventDefault(); openAbout(); });
   const guide = document.getElementById('guide');
@@ -322,17 +340,42 @@ function buildChaptersOverview() {
   }
 }
 
+function buildVersesSections() {
+  const container = document.getElementById('verses-sections');
+  if (!container) return;
+  container.innerHTML = '';
+  for (let ch=1; ch<=18; ch++) {
+    const det = document.createElement('details');
+    det.className = 'verses-nav';
+    if (ch===1) det.open = true;
+    const sum = document.createElement('summary');
+    sum.className = 'verses-title';
+    sum.textContent = `Chapter ${ch} — Verses`;
+    det.appendChild(sum);
+    if (ch===1) {
+      const grid = document.createElement('div');
+      grid.id = 'chapter-grid';
+      grid.className = 'chapter-grid';
+      grid.setAttribute('role','list');
+      grid.setAttribute('aria-label','Chapter 1 verses');
+      det.appendChild(grid);
+    } else {
+      const p = document.createElement('div');
+      p.className = 'video-copy';
+      p.textContent = 'Coming soon';
+      det.appendChild(p);
+    }
+    container.appendChild(det);
+  }
+}
+
 function showOverview() {
-  const ov = document.getElementById('chapters-overview');
-  const d1 = document.getElementById('ch1-detail');
-  if (ov) ov.hidden = false; if (d1) d1.hidden = true;
+  document.body.classList.add('sidebar-open');
   localStorage.setItem('gsd_last_chapter_open','0');
 }
 
 function showChapter1() {
-  const ov = document.getElementById('chapters-overview');
-  const d1 = document.getElementById('ch1-detail');
-  if (ov) ov.hidden = true; if (d1) d1.hidden = false;
+  document.body.classList.remove('sidebar-open');
   localStorage.setItem('gsd_last_chapter_open','1');
   loadChapterArt();
   buildChapterGrid();
@@ -452,6 +495,38 @@ function copyVerse() {
     const ta = document.createElement('textarea');
     ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
     alert('Verse copied!');
+  }
+}
+
+function renderVideo(s) {
+  const container = document.getElementById('video-container');
+  if (!container) return;
+  container.innerHTML = '';
+  const url = (s.videoUrl || '').trim();
+  if (!url) {
+    container.className = 'video-card';
+    container.innerHTML = '<div class="video-thumb" aria-hidden="true"></div><div class="video-copy">Video lessons are coming soon for this verse.</div>';
+    return;
+  }
+  // try YouTube embed
+  let embed = '';
+  const yt = url.match(/(?:youtu\.be\/|v=)([A-Za-z0-9_-]{6,})/);
+  if (yt && yt[1]) {
+    const id = yt[1];
+    embed = `<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/${id}?rel=0" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+  }
+  if (embed) {
+    const wrap = document.createElement('div');
+    wrap.style.width = '100%';
+    wrap.style.aspectRatio = '16/9';
+    wrap.style.border = '1px solid rgba(255,255,255,0.12)';
+    wrap.style.borderRadius = '12px';
+    wrap.style.overflow = 'hidden';
+    wrap.innerHTML = embed;
+    container.appendChild(wrap);
+  } else {
+    container.className = 'video-card';
+    container.innerHTML = '<div class="video-thumb" aria-hidden="true"></div><div class="video-copy">Video for this verse is not supported yet.</div>';
   }
 }
 
@@ -602,6 +677,7 @@ function autoOverlayForCard(src){
   todaysIdx = indexForDate(today);
   selectedIdx = todaysIdx;
   buildChaptersOverview();
+  buildVersesSections();
   const lastOpen = localStorage.getItem('gsd_last_chapter_open');
   if (lastOpen === '1') showChapter1(); else showOverview();
   renderSelected();
@@ -612,5 +688,7 @@ function autoOverlayForCard(src){
   const fallbackSeen = localStorage.getItem('gsd_about_seen');
   if (auto === '1' || (auto === null && fallbackSeen !== '1')) {
     setTimeout(() => openAbout(), 800);
+  }
+})();
   }
 })();

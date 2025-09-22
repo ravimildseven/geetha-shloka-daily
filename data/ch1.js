@@ -9,7 +9,8 @@ export const CH1 = [
     transliteration: `dhṛtarāṣṭra uvāca —
 dharmakṣetre kurukṣetre samavetā yuyutsavaḥ |
 māmakāḥ pāṇḍavāś caiva kim akurvata sañjaya`,
-    meaning: '',
+meaning: '',
+    videoUrl: '',
     source: 'BG 1.1'
   },
   {

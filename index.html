@@ -39,100 +39,108 @@
       </div>
     </header>
 
-    <main>
-      <section id="chapters-overview" class="chapters-overview">
+    <main class="app">
+      <aside id="chapters-sidebar" class="sidebar" aria-label="Chapters list">
         <div class="overview-header">
           <h2>Chapters</h2>
-          <p class="chapter-sub">Tap a chapter to view its daily verse</p>
+          <button id="btn-sidebar" class="ghost" title="Toggle chapters">☰</button>
         </div>
         <div class="chapters-grid" id="chapters-grid"></div>
-      </section>
 
-      <div id="ch1-detail" hidden>
-      <section class="chapter">
-        <div class="chapter-header">
-          <h2>Chapter 1</h2>
-          <button id="btn-back-chapters" class="ghost" title="Back to chapters">← Chapters</button>
-        </div>
-        <div class="guide card">
-          <details id="guide">
-            <summary class="guide-title">How this works</summary>
-            <ol class="guide-steps">
-              <li>
-                <h4>Daily unlock</h4>
-                <p>Each day a new tile becomes available. Tap the tile for today’s verse to open the full text, transliteration, and translation.</p>
-              </li>
-              <li>
-                <h4>Test mode (dev/testing only)</h4>
-                <p>If you’re testing the site, enable <em>All tiles</em> in the top-right to unlock every verse instantly. This is only for testing — normal users see one verse per day.</p>
-              </li>
-              <li>
-                <h4>View &amp; practice</h4>
-                <ul>
-                  <li>Read the original verse and transliteration</li>
-                  <li>See a concise translation and short commentary</li>
-                  <li>Use playback controls to hear the verse</li>
-                </ul>
-              </li>
-              <li>
-                <h4>Playback controls</h4>
-                <ul>
-                  <li><strong>Play / Stop</strong> — listen to the verse audio for pronunciation and cadence.</li>
-                  <li><strong>Copy verse</strong> — copy the original + transliteration + translation to clipboard for study notes or sharing.</li>
-                  <li><strong>Save PNG</strong> — export a clean image of the verse (ready for social or printing).</li>
-                </ul>
-              </li>
-              <li>
-                <h4>Mark as learned</h4>
-                <ul>
-                  <li>Earn points</li>
-                  <li>Add a day to your streak</li>
-                  <li>Unlock progress rewards (if enabled)</li>
-                </ul>
-              </li>
-              <li>
-                <h4>Streaks &amp; points</h4>
-                <p>Keep a daily streak by marking the verse learned on the same day it unlocks. Points accumulate and can be used for badges, milestone rewards, or friendly leaderboards.</p>
-              </li>
-            </ol>
-          </details>
-        </div>
-        <figure class="chapter-art-wrap">
-          <img id="chapter-art" class="chapter-art" src="./assets/ch1-hero-1.jpg" alt="Kurukshetra battlefield">
-        </figure>
-        <div id="chapter-grid" class="chapter-grid" aria-label="Chapter 1 verses" role="list"></div>
-      </section>
+        <div id="verses-sections"></div>
+      </aside>
 
-      <section class="hero">
-        <div class="decor decor-1"></div>
-        <div class="decor decor-2"></div>
-        <div class="decor decor-3"></div>
-        <div class="hero-content">
-          <h2>Today’s Shloka</h2>
-          <div class="card verse-card" id="shloka-card">
-            <div class="verse-art" aria-hidden="true"></div>
-            <div class="shloka-meta">
-              <span class="verse-icon" aria-hidden="true">📜</span>
-              <span id="shloka-source" class="badge"></span>
-            </div>
-            <div class="shloka-text">
-              <div id="shloka-sanskrit" class="sanskrit">Loading...</div>
-              <div id="shloka-transliteration" class="transliteration"></div>
-            </div>
-            <div class="actions">
-              <button id="mark-learned" class="primary" title="Mark today’s verse as learned (+10 points)">Mark as learned</button>
-              <button id="show-meaning" class="secondary" title="Toggle meaning">Show meaning</button>
-              <button id="play-audio" class="secondary" title="Play verse audio">🔊 Play audio</button>
-              <button id="stop-audio" class="secondary" title="Stop audio">⏹ Stop audio</button>
-              <button id="copy-verse" class="secondary" title="Copy Sanskrit + transliteration + source">📋 Copy verse</button>
-              <button id="save-png" class="secondary" title="Save shareable PNG">⬇️ Save PNG</button>
-            </div>
-            <div class="meaning" id="shloka-meaning" hidden></div>
+      <div class="content">
+        <section class="chapter">
+          <div class="chapter-header">
+            <h2>Chapter 1</h2>
           </div>
-        </div>
-      </section>
+          <div class="guide card">
+            <details id="guide">
+              <summary class="guide-title">How this works</summary>
+              <ol class="guide-steps">
+                <li>
+                  <h4>Daily unlock</h4>
+                  <p>Each day a new tile becomes available. Tap the tile for today’s verse to open the full text, transliteration, and translation.</p>
+                </li>
+                <li>
+                  <h4>Test mode (dev/testing only)</h4>
+                  <p>If you’re testing the site, enable <em>All tiles</em> in the top-right to unlock every verse instantly. This is only for testing — normal users see one verse per day.</p>
+                </li>
+                <li>
+                  <h4>View &amp; practice</h4>
+                  <ul>
+                    <li>Read the original verse and transliteration</li>
+                    <li>See a concise translation and short commentary</li>
+                    <li>Use playback controls to hear the verse</li>
+                  </ul>
+                </li>
+                <li>
+                  <h4>Playback controls</h4>
+                  <ul>
+                    <li><strong>Play / Stop</strong> — listen to the verse audio for pronunciation and cadence.</li>
+                    <li><strong>Copy verse</strong> — copy the original + transliteration + translation to clipboard for study notes or sharing.</li>
+                    <li><strong>Save PNG</strong> — export a clean image of the verse (ready for social or printing).</li>
+                  </ul>
+                </li>
+                <li>
+                  <h4>Mark as learned</h4>
+                  <ul>
+                    <li>Earn points</li>
+                    <li>Add a day to your streak</li>
+                    <li>Unlock progress rewards (if enabled)</li>
+                  </ul>
+                </li>
+                <li>
+                  <h4>Streaks &amp; points</h4>
+                  <p>Keep a daily streak by marking the verse learned on the same day it unlocks. Points accumulate and can be used for badges, milestone rewards, or friendly leaderboards.</p>
+                </li>
+              </ol>
+            </details>
+          </div>
+          <figure class="chapter-art-wrap">
+            <img id="chapter-art" class="chapter-art" src="./assets/ch1-hero-1.jpg" alt="Kurukshetra battlefield">
+          </figure>
+        </section>
 
+        <section class="hero">
+          <div class="decor decor-1"></div>
+          <div class="decor decor-2"></div>
+          <div class="decor decor-3"></div>
+          <div class="hero-content">
+            <h2>Today’s Shloka</h2>
+            <div class="card verse-card" id="shloka-card">
+              <div class="verse-art" aria-hidden="true"></div>
+              <div class="shloka-meta">
+                <span class="verse-icon" aria-hidden="true">📜</span>
+                <span id="shloka-source" class="badge"></span>
+              </div>
+              <div class="shloka-text">
+                <div id="shloka-sanskrit" class="sanskrit">Loading...</div>
+                <div id="shloka-transliteration" class="transliteration"></div>
+              </div>
+              <div class="actions">
+                <button id="mark-learned" class="primary" title="Mark today’s verse as learned (+10 points)">Mark as learned</button>
+                <button id="show-meaning" class="secondary" title="Toggle meaning">Show meaning</button>
+                <button id="play-audio" class="secondary" title="Play verse audio">🔊 Play audio</button>
+                <button id="stop-audio" class="secondary" title="Stop audio">⏹ Stop audio</button>
+                <button id="copy-verse" class="secondary" title="Copy Sanskrit + transliteration + source">📋 Copy verse</button>
+                <button id="save-png" class="secondary" title="Save shareable PNG">⬇️ Save PNG</button>
+              </div>
+              <div class="meaning" id="shloka-meaning" hidden></div>
+            </div>
+
+            <section id="video-section" class="video" aria-label="Verse video">
+              <div id="video-container" class="video-card">
+                <div class="video-thumb" aria-hidden="true"></div>
+                <div class="video-copy">Video lessons are coming soon for this verse.</div>
+              </div>
+            </section>
+          </div>
+        </section>
       </div>
+
+      </main>
 
       <section class="stats">
         <div class="stat">

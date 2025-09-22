@@ -89,8 +89,10 @@ button.ghost:hover { background: rgba(255,255,255,0.12); }
   border-left: 3px solid var(--accent);
   background: rgba(255,255,255,0.02);
   border-radius: 8px;
+  width: 100%;
+  overflow-wrap: anywhere;
 }
-.transliteration { color: var(--muted); font-size: 0.98rem; white-space: pre-wrap; }
+.transliteration { color: var(--muted); font-size: 0.98rem; white-space: pre-wrap; width: 100%; overflow-wrap: anywhere; }
 
 .actions { display: flex; gap: 10px; margin-top: 16px; }
 button { cursor: pointer; border: 0; padding: 10px 14px; border-radius: 10px; font-weight: 600; }
@@ -182,6 +184,17 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
   .sanskrit { font-size: 1.15rem; line-height: 1.7; border-left-width: 2px; }
   .transliteration { font-size: 0.95rem; }
   .verse-row { padding: 12px 12px; }
+}
+
+@media (orientation: landscape) and (max-height: 480px) {
+  .app { grid-template-columns: 1fr; padding: 0 8px; }
+  .sidebar { top: 52px; height: calc(100vh - 52px); }
+  .hero { padding: 6px 8px 10px; }
+  .hero .hero-content { margin: 0; max-width: none; width: 100%; }
+  .verse-card { width: 100%; max-width: 860px; margin: 6px auto; padding: 14px; background-image: none; }
+  .sanskrit { font-size: 1.05rem; line-height: 1.65; }
+  .transliteration { font-size: 0.92rem; }
+  .decor-1, .decor-2, .decor-3 { display: none; }
 }
 
 /* App layout */

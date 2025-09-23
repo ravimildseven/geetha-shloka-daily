@@ -21,6 +21,7 @@ body {
   background: radial-gradient(1200px 600px at 10% 10%, var(--bg-2), transparent),
               radial-gradient(1200px 600px at 90% 0%, #14153a, transparent),
               linear-gradient(180deg, var(--bg), #0b0c1a 60%);
+  overflow-x: hidden;
 }
 
 /* Background hero image set from JS using CSS var */
@@ -163,38 +164,125 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
   .transliteration { font-size: 1.05rem; }
 }
 
-@media (max-width: 640px) {
-  .stats { grid-template-columns: 1fr; }
-  .app { grid-template-columns: 1fr; gap: 8px; padding: 0 8px; }
-  .hero .hero-content { width: 100%; }
-  .verse-card { width: 100%; max-width: 100%; }
-  .sidebar { position: fixed; left: 0; top: 56px; width: 85%; max-width: 360px; height: calc(100vh - 56px); background: rgba(15,16,32,0.98); border-right: 1px solid rgba(255,255,255,0.08); transform: translateX(-110%); transition: transform .25s ease; padding: 8px 12px; }
-  body.sidebar-open { overflow: hidden; }
-  body.sidebar-open .sidebar { transform: translateX(0%); }
-  body.sidebar-open .sidebar-overlay { display: block !important; }
-  .chapters-list { gap: 8px; }
-  .chapter-item { padding: 10px; }
-  .nav .nav-right { gap: 6px; }
-  .social-icon { width: 18px; height: 18px; }
-  .toolbar button { padding: 8px 10px; }
-  .hero { padding: 8px 8px 12px; }
-  .hero .hero-content { max-width: none; margin: 0; }
-  .verse-card { padding: 14px; background-image: none; }
-  .verse-card .verse-art { display: none; }
-  .sanskrit { font-size: 1.15rem; line-height: 1.7; border-left-width: 2px; }
-  .transliteration { font-size: 0.95rem; }
-  .verse-row { padding: 12px 12px; }
+/* Responsive styles for mobile devices */
+@media (max-width: 900px) {
+  .site-header, .nav {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px 8px 8px;
+  }
+  .nav .nav-left, .nav .nav-right {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .nav .nav-right .toolbar {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .brand-roman {
+    font-size: 1.1rem;
+  }
+  .brand-sa {
+    font-size: 1rem;
+  }
+  .site-header h1 {
+    font-size: 1.2rem;
+  }
+  .hero h2 {
+    font-size: 1.1rem;
+  }
+  .card, .verse-card {
+    padding: 14px 8px;
+    border-radius: 10px;
+  }
+  .sanskrit {
+    font-size: 1.1rem;
+    padding: 4px 6px;
+  }
+  .transliteration {
+    font-size: 0.9rem;
+  }
+  button, button.ghost, button.primary, button.secondary {
+    padding: 8px 10px;
+    font-size: 1rem;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  main.app {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  aside.sidebar, .content {
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    box-sizing: border-box;
+  }
 }
 
-@media (orientation: landscape) and (max-height: 480px) {
-  .app { grid-template-columns: 1fr; padding: 0 8px; }
-  .sidebar { top: 52px; height: calc(100vh - 52px); }
-  .hero { padding: 6px 8px 10px; }
-  .hero .hero-content { margin: 0; max-width: none; width: 100%; }
-  .verse-card { width: 100%; max-width: 860px; margin: 6px auto; padding: 14px; background-image: none; }
-  .sanskrit { font-size: 1.05rem; line-height: 1.65; }
-  .transliteration { font-size: 0.92rem; }
-  .decor-1, .decor-2, .decor-3 { display: none; }
+@media (max-width: 600px) {
+  .site-header, .nav {
+    padding: 10px 4px 4px;
+  }
+  .brand-roman {
+    font-size: 1rem;
+  }
+  .brand-sa {
+    font-size: 0.95rem;
+  }
+  .site-header h1 {
+    font-size: 1rem;
+  }
+  .hero {
+    padding: 12px 4px 6px;
+  }
+  .card, .verse-card {
+    padding: 8px 2px;
+    border-radius: 8px;
+  }
+  .sanskrit {
+    font-size: 1rem;
+    padding: 2px 4px;
+  }
+  .transliteration {
+    font-size: 0.85rem;
+  }
+  .actions {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .nav .nav-right .toolbar {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+/* Make images and containers responsive */
+img, .verse-card, .card, .hero-content {
+  max-width: 100%;
+  height: auto;
+  box-sizing: border-box;
+}
+
+/* Ensure sidebar and main content stack on mobile */
+@media (max-width: 900px) {
+  main.app {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  aside.sidebar, .content {
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    box-sizing: border-box;
+  }
 }
 
 /* App layout */

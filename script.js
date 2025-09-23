@@ -509,8 +509,14 @@ function loadVerseArt(idx) {
   const base = `./assets/ch1/${n}`;
   const candidates = [ `${base}.jpg`, `${base}.png`, `${base}.webp` ];
   let i = 0;
+  const fallback = './assets/lotus.svg'; // fallback image
   const tryNext = () => {
-    if (i >= candidates.length) { cardArt.style.backgroundImage = 'none'; return; }
+    if (i >= candidates.length) {
+      cardArt.style.backgroundImage = `url(${fallback})`;
+      verseArtSrc = fallback;
+      autoOverlayForCard(fallback);
+      return;
+    }
     const src = candidates[i++];
     const tester = new Image();
     tester.onload = () => { cardArt.style.backgroundImage = `url(${src})`; verseArtSrc = src; autoOverlayForCard(src); };
